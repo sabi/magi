@@ -60,3 +60,13 @@ Inside The Magi installation folder, there are four items:
 * Config - Where you will give The Magi the tools it needs to get you rolling. Simply create a new
             config file for each webserver, following the example provided.
 * Docs - README and list of current webservers
+
+Future Development
+-----------------------
+
+* Add additional Linux distribution support
+* Add macOS and Windows 10 support
+* Change server management to subdomains from host:port format
+* Integrate modular CSS support to easily import custom CSS templates
+* Improve integration of video formats into Magi generated webpages
+* Improve server indexing speeds for faster page loading
