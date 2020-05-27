@@ -20,11 +20,11 @@ _NOTICE: This package will install software from your apt sources: nginx and apa
 **To add webservers:**
 * Make a directory/folder of albums of images and videos you want to include.
 * (Optional) Make a config file in magi/config. (See evangelion.conf for example)
-   - There are four variables: category, title, banner, auth
-                        - category: Name of your directory
-                        - title: Title on browser tab
-                        - banner: Top headline for the website
-                        - auth: True/False/Unique
+  * There are four variables: category, title, banner, auth
+    * category: Name of your directory
+    * title: Title on browser tab
+    * banner: Top headline for the website
+    * auth: True/False/Unique
 * Put the new directory in ./magi/categories
 
 **To update The Magi:**
