@@ -5,6 +5,7 @@ Sabi. Simple, Lightweight, but Not Beautiful.
 # Quick Start #
 ###############
 
+NOTICE: This software currently only supports Debian distros of Linux. Future development with add additional OS support.
 NOTICE: This package will install software from your apt sources: nginx and apache2
 
 To view your webserver:
