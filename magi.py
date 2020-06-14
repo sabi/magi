@@ -5,10 +5,12 @@
 
 import os, shutil, sys, random 
 
+version = "0.6.14"
+
 imageFormats = ['.jpg', 'jpeg', '.bmp', '.gif', '.png']
 videoFormats = ['.mp4', '.mov', '.mkv', '.avi', 'mpeg', 'webm']
 
-def setup():
+def setup(version):
     update = False
     cwd = os.path.abspath(os.path.dirname(__file__))
     
@@ -51,11 +53,11 @@ def setup():
         if "web" not in os.listdir(server):
             os.makedirs(server + "/web")
 
-def html(category, title, banner):
+def html(category, title, banner, version):
     web = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/web/"
     subcategories = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/subcategories"
     
-    header = "<!DOCTYPE HTML>\n<html>\n<head>\n<title>" + title + "</title>\n<metadata charset='utf-8'>\n</head>\n"
+    header = "<!DOCTYPE HTML>\n<html>\n<head>\n<title>" + title + "</title>\n<metadata charset='utf-8'>\n<meta name='generator' content='The Magi " + version + "'/>\n</head>\n"
     style1 = "<style> "
     style2 = "<style>\ndiv.gallery {\n  margin: 5px;\n  border: 1px solid #ccc;\n  float:left;\n  width: 180px;\n}\n\ndiv.gallery:hover {\n border: 1px solid #777;\n}\n\ndiv.gallery img {\n width: 100%;\n  height:auto;\n}\n\n.caption {\n  display: block;\ntext-align: center;\nfont-weight: bold;\n}\n</style>\n"
 
@@ -188,6 +190,22 @@ def end(ports):
 #################
 # Start Program #
 #################
+
+if len(sys.argv) > 1:
+    if sys.argv[1] in ["-h","--help"]:
+        sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
+        -h --help    : Display this menu
+        -v --version : Display the version number
+        -s --servers : Print list of current servers
+        """)
+    elif sys.argv[1] in ["-v","--version"]:
+        sys.exit(version)
+    elif sys.argv[1] in ["-s", "--servers"]:
+        with open("docs/myWebservers.txt", "r") as myWebservers:
+            currentServers = myWebservers.read()
+        sys.exit(currentServers)
+    else:
+        sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
 ports = {}
 authSet = False
