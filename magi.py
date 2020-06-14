@@ -211,7 +211,7 @@ ports = {}
 authSet = False
 
 # Check dependencies and new Magi webservers
-setup()
+setup(version)
 
 # Read configuration files and add them to bigDict
 bigDict = readConfig()
@@ -229,7 +229,7 @@ for x in bigDict.keys():
     authentication(auth, port, category, x)
 
 # Create the html files
-    html(category, title, banner)
+    html(category, title, banner, version)
 
 # Print a mapping of all webservers and ports and save to docs/myWebservers.txt
 end(ports)
