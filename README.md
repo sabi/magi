@@ -6,9 +6,9 @@ Sabi. Simple, Lightweight, but Not Beautiful.
 Quick Start
 -------------------
 
-_NOTICE: This software is currently compatible with Debian distributions of Linux. Future development will add additional OS support._
+_NOTICE: The full webserver edition of this software is only compatible with Linux. Windows supports HTML Only mode._
 
-_NOTICE: This package will install software from your apt sources: nginx and apache2_
+_NOTICE: For Linux machines, this package will install software from your apt sources: nginx and apache2. If your distro does not use apt, you can manually install nginx and apache2_
 
 **To view your webserver:**
 * After running The Magi each time, it will print a list of each ports being
@@ -61,11 +61,27 @@ Inside The Magi installation folder, there are four items:
             config file for each webserver, following the example provided.
 * Docs - README and list of current webservers
 
+HTML Only Mode
+------------------
+
+The Magi supports an option to only generate the HTML files for your media.  This is a good option 
+if you do not want to run an NGINX webserver on your computer, you do not have admin access, or you
+want to use these HTML files on another web hosting service like AWS S3.
+
+You can access this by running `python3 magi.py --html-only`
+
+Additional Options
+-------------------
+-h --help      : Display list of options
+-v --version   : Display the version number of The Magi
+-s --servers   : Print list of current servers
+-H --html-only : Generate html files without managing the nginx webserver backend
+
 Future Development
 -----------------------
 
 * Add additional Linux distribution support
-* Add macOS and Windows 10 support
+* Add more macOS and Windows 10 support
 * Change server management to subdomains from host:port format
 * Integrate modular CSS support to easily import custom CSS templates
 * Improve integration of video formats into Magi generated webpages
