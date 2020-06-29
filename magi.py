@@ -5,38 +5,56 @@
 
 import os, shutil, sys, random 
 
-version = "0.6.14"
+version = "0.06"
+
+cwd = os.path.abspath(os.path.dirname(__file__))
 
 imageFormats = ['.jpg', 'jpeg', '.bmp', '.gif', '.png']
 videoFormats = ['.mp4', '.mov', '.mkv', '.avi', 'mpeg', 'webm']
 
+html_only = False
+
 def setup(version):
     update = False
-    cwd = os.path.abspath(os.path.dirname(__file__))
     
     # Check if running as root/sudo
-    if not os.geteuid() == 0:
-        sys.exit('This script must be run as root!')
+    if not html_only:
+        if not os.geteuid() == 0:
+            sys.exit('This script must be run as root!')
 
     # Check if Python 3
     if not sys.version_info[0] == 3:
         sys.exit('This script is only compatible with Python 3.')
     
+    # Check if not Windows
+    if os.name != "nt":
+
+    # Check for apt compatibility
+        if shutil.which('apt-get'):
+
     # Check if nginx is installed
-    if not os.path.isdir('/etc/nginx'):
-        update = True
-        os.system("apt-get update && apt-get install nginx -y")
-    
-    # Check if apache2-utils is installed (for htpasswd authentication)
-    if not os.path.isdir('/etc/apache2'):
-        if update == False:
-            update = True
-            os.system("apt-get update")
-        os.system("apt-get install apache2-utils -y")
+            if not shutil.which('nginx'):
+                os.system('apt-get update && apt-get install nginx -y')
+                update = True
+
+    # Check if apache2 is installed
+            if not shutil.which('apache2'):
+                if update == True:
+                    os.system('apt-get install apache2 -y')
+                else:
+                    os.system('apt-get update && apt-get install apache2 -y')
     
     # Check if apache2 directory is present, since it doesn't always create...... >:(
-    if not os.path.exists('/etc/apache2'):
-        os.makedirs('/etc/apache2')
+            if not os.path.exists('/etc/apache2'):
+                os.makedirs('/etc/apache2')
+
+    # Check if nginx is installed
+        if not shutil.which('nginx'):
+            sys.exit('nginx is not installed on this machine.\nPlease install nginx if you want to host webservers on this machine,\nor if you just want the webfiles run with the --html-only option.')
+    
+    # Check if apache2-utils is installed (for htpasswd authentication)
+        if not shutil.which('apache2'):
+            print("NOTICE: apache2 is not installed. You will not be able to secure your webpages with a password until you install.\n")
     
     # Initialize any new webservers
     configs = os.listdir(cwd + "/config")
@@ -59,18 +77,18 @@ def html(category, title, banner, version):
     
     header = "<!DOCTYPE HTML>\n<html>\n<head>\n<title>" + title + "</title>\n<metadata charset='utf-8'>\n<meta name='generator' content='The Magi " + version + "'/>\n</head>\n"
     style1 = "<style> "
-    style2 = "<style>\ndiv.gallery {\n  margin: 5px;\n  border: 1px solid #ccc;\n  float:left;\n  width: 180px;\n}\n\ndiv.gallery:hover {\n border: 1px solid #777;\n}\n\ndiv.gallery img {\n width: 100%;\n  height:auto;\n}\n\n.caption {\n  display: block;\ntext-align: center;\nfont-weight: bold;\n}\n</style>\n"
+    style2 = "<style>\ndiv.gallery {\n  margin: 5px;\n  border: 1px solid #ccc;\n  float:left;\n  width: 180px;\n}\n\ndiv.gallery:hover {\n border: 1px solid #777;\n}\n\ndiv.gallery img {\n width: 100%;\n  height:auto;\n}\n\n.caption {\n  display: block;\ntext-align: center;\nfont-weight: bold;\n}\n\n</style>\n"
 
 
     # Create the main index page
     with open(web + "index.html", "w") as index:
         index.write(header)
         index.write(style2)
-        index.write("<body>")
+        index.write("<body>\n")
         index.write("<h1>" + banner + "</h1>\n")
         for subcat in os.listdir(subcategories):
-            index.write('<div class="gallery">')
-            index.write('<a target="_self" href="/web/' + subcat + '.html">')
+            index.write('<div class="gallery">\n')
+            index.write('<a target="_self" href="/web/' + subcat + '.html">\n')
             while True:
                 preview = os.listdir(subcategories + "/" + subcat)[random.randrange(0,len(os.listdir(subcategories + "/" + subcat)))]
                 if preview[-4:] in imageFormats:
@@ -177,6 +195,7 @@ def authentication(auth, port, category, x):
 
 def end(ports):
     with open(os.path.abspath(os.path.dirname(__file__)) + "/docs/myWebservers.txt","w") as myWebservers:
+        myWebservers.write("The Magi by Sabi\n")
         for k, v in ports.items():
             msg = k + " is hosted on: " + v
             print(msg)
@@ -184,19 +203,20 @@ def end(ports):
     myWebservers.close()
 
     os.system("systemctl restart nginx")
-    print("The Magi has updated!")
 
 
 #################
 # Start Program #
 #################
 
+# Check for options flags
 if len(sys.argv) > 1:
     if sys.argv[1] in ["-h","--help"]:
         sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
-        -h --help    : Display this menu
-        -v --version : Display the version number
-        -s --servers : Print list of current servers
+        -h --help       : Display this menu
+        -v --version    : Display the version number
+        -s --servers    : Print list of current servers
+        -H --html-only  : Generate html files without managing the nginx webserver backend
         """)
     elif sys.argv[1] in ["-v","--version"]:
         sys.exit(version)
@@ -204,11 +224,21 @@ if len(sys.argv) > 1:
         with open("docs/myWebservers.txt", "r") as myWebservers:
             currentServers = myWebservers.read()
         sys.exit(currentServers)
+    elif sys.argv[1] in ["-H","--html-only"]:
+        html_only = True
     else:
         sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
 ports = {}
 authSet = False
+
+# Check if Windows
+if os.name == "nt":
+    html_only = True
+
+# Warn HTML Only mode
+if html_only == True:
+    print("The Magi will generate HTML files only. Check the README for info about hosting with The Magi")
 
 # Check dependencies and new Magi webservers
 setup(version)
@@ -226,10 +256,15 @@ for x in bigDict.keys():
     ports[category] = port
 
 # Create the nginx configuration file
-    authentication(auth, port, category, x)
+    if not html_only:
+        authentication(auth, port, category, x)
 
 # Create the html files
     html(category, title, banner, version)
 
 # Print a mapping of all webservers and ports and save to docs/myWebservers.txt
-end(ports)
+if not html_only:
+    end(ports)
+
+print("The Magi has updated!")
+
