@@ -72,10 +72,10 @@ You can access this by running `python3 magi.py --html-only`
 
 Additional Options
 -------------------
--h --help      : Display list of options
--v --version   : Display the version number of The Magi
--s --servers   : Print list of current servers
--H --html-only : Generate html files without managing the nginx webserver backend
+* -h --help      : Display list of options
+* -v --version   : Display the version number of The Magi
+* -s --servers   : Print list of current servers
+* -H --html-only : Generate html files without managing the nginx webserver backend
 
 Future Development
 -----------------------
