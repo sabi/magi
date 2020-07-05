@@ -5,7 +5,7 @@
 
 import os, shutil, sys, random 
 
-version = "0.06"
+version = "0.07"
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -234,7 +234,8 @@ authSet = False
 
 # Check if Windows
 if os.name == "nt":
-    html_only = True
+    sys.exit("The Magi is currently only compatible with Linux")
+    #html_only = True
 
 # Warn HTML Only mode
 if html_only == True:
