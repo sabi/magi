@@ -216,7 +216,7 @@ if len(sys.argv) > 1:
         -h --help       : Display this menu
         -v --version    : Display the version number
         -s --servers    : Print list of current servers
-        -H --html-only  : Generate html files without managing the nginx webserver backend
+        -H --html-only  : Generate html files without changing the nginx webserver backend
         """)
     elif sys.argv[1] in ["-v","--version"]:
         sys.exit(version)
