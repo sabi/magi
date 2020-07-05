@@ -27,11 +27,14 @@ _NOTICE: For Linux machines, this package will install software from your apt so
     * auth: True/False/Unique
 * Put the new directory in ./magi/categories
 
-**To update The Magi:**
+**To run The Magi and update HTML files and hosted servers:**
 * Open your terminal
 * Navigate to where you installed The Magi
 * Type `sudo python3 magi.py`
 
+**To update The Magi to newest version:**
+* Replace your current `magi.py` file with the newest version from this GitHub
+* You can check your current version with `python3 magi.py -v`
 
 Example
 -------------
