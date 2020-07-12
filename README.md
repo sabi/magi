@@ -58,11 +58,13 @@ File Structure
 
 Inside The Magi installation folder, there are four items:
 
-* Categories - Where you will add directories for each webserver. Inside each directory you add,
+* categories - Where you will add directories for each webserver. Inside each directory you add,
                 there should be collections of media in separate directories.
-* Config - Where you will give The Magi the tools it needs to get you rolling. Simply create a new
+* config - Where you will give The Magi the tools it needs to get you rolling. Simply create a new
             config file for each webserver, following the example provided.
-* Docs - README and list of current webservers
+* docs - README and list of current webservers
+* style - CSS Themes for The Magi
+* magi.py - Run this script with `sudo python3 magi.py`
 
 HTML Only Mode
 ------------------
@@ -75,10 +77,11 @@ You can access this by running `python3 magi.py --html-only`
 
 Additional Options
 -------------------
-* -h --help      : Display list of options
-* -v --version   : Display the version number of The Magi
-* -s --servers   : Print list of current servers
-* -H --html-only : Generate html files without changing the nginx webserver backend
+* -h --help       : Display list of options
+* -v --version    : Display the version number of The Magi
+* -s --servers    : Print list of current servers
+* -H --html-only  : Generate html files without changing the nginx webserver backend
+* -cl --changelog : Print changes to The Magi
 
 Future Development
 -----------------------
