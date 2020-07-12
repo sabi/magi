@@ -5,7 +5,7 @@
 
 import os, shutil, sys, random 
 
-version = "0.07"
+version = "0.08"
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -71,58 +71,78 @@ def setup(version):
         if "web" not in os.listdir(server):
             os.makedirs(server + "/web")
 
-def html(category, title, banner, version):
+    # Ensure style directory exists 
+    if "style" not in os.listdir(cwd):
+        os.makedirs(cwd + "/style")
+        # TODO Make this Windows/Mac compatible
+    
+    # Ensure default style exists
+    if not os.path.isfile(cwd + "/style/default.css"):
+        defaultCSS()
+    
+
+def defaultCSS():
+    with open(cwd + "/style/default.css","w") as css:
+        css.write("/*\nSabi. Simple, Lightweight, but Not Beautiful\nhttps://github.com/sabi\n\nTheme: magi-darkmode-default.css\nVersion: 1\n*/\n\n")
+        css.write("#background {\n\tbackground-color:#353535;\n\tcolor: white;\n}\n\n")
+        css.write(".gallery {\n\tmargin: 5px;\n\tborder: 1px solid #ccc;\n\tfloat: left;\n\twidth: 180px;\n}\n\n")
+        css.write(".gallery:hover {\n\tborder: 1px solid #777;\n}\n\n")
+        css.write(".gallery img {\n\twidth: 100%;\n\theight: auto;\n}\n\n")
+        css.write(".galleryVideo {\n\tmax-width: 180px;\n\twidth: auto;\n}\n\n")
+        css.write(".caption {\n\tdisplay: block;\n\ttext-align: center;\n\tfont-weight: bold;\n}")
+
+
+def html(category, title, banner, version, style):
     web = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/web/"
+    styleDir = os.path.abspath(os.path.dirname(__file__)) + "/style/"
     subcategories = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/subcategories"
     
-    header = "<!DOCTYPE HTML>\n<html>\n<head>\n<title>" + title + "</title>\n<metadata charset='utf-8'>\n<meta name='generator' content='The Magi " + version + "'/>\n</head>\n"
-    style1 = "<style> "
-    style2 = "<style>\ndiv.gallery {\n  margin: 5px;\n  border: 1px solid #ccc;\n  float:left;\n  width: 180px;\n}\n\ndiv.gallery:hover {\n border: 1px solid #777;\n}\n\ndiv.gallery img {\n width: 100%;\n  height:auto;\n}\n\n.caption {\n  display: block;\ntext-align: center;\nfont-weight: bold;\n}\n\n</style>\n"
-
+    header = "<!DOCTYPE HTML>\n<html>\n\n\t<head>\n\t\t<title>" + title + "</title>\n\t\t<link rel='stylesheet' href='/web/style.css'>\n\t\t<metadata charset='utf-8'>\n\t\t<meta name='generator' content='The Magi " + version + "'/>\n\t</head>\n"
 
     # Create the main index page
     with open(web + "index.html", "w") as index:
         index.write(header)
-        index.write(style2)
-        index.write("<body>\n")
-        index.write("<h1>" + banner + "</h1>\n")
+        index.write("\n\t<body id=background>\n\n\t\t<div>\n")
+        index.write("\t\t\t<h1>" + banner + "</h1>\n")
         for subcat in os.listdir(subcategories):
-            index.write('<div class="gallery">\n')
-            index.write('<a target="_self" href="/web/' + subcat + '.html">\n')
+            index.write('\t\t\t\t<div class="gallery">\n')
+            index.write('\t\t\t\t\t<a target="_self" href="/web/' + subcat + '.html">\n')
             while True:
                 preview = os.listdir(subcategories + "/" + subcat)[random.randrange(0,len(os.listdir(subcategories + "/" + subcat)))]
                 if preview[-4:] in imageFormats:
                     break
-            index.write('<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '" height:"100%" width:"auto">\n</a>\n<span class="caption">' + subcat + '</div>\n\n')
+            index.write('\t\t\t\t\t\t<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '">\n\t\t\t\t\t</a>\n\t\t\t\t\t<span class="caption">' + subcat + '</span>\n\t\t\t\t</div>\n\n')
 
             # Create the subcategory pages
             with open(web + subcat + ".html", "w") as subindex:
                 subindex.write(header)
-                subindex.write(style2)
-                subindex.write("<body>\n<h1>" + subcat + "</h1>\n\n")
+                subindex.write("\n\t<body id='background'>\n\n\t\t<h1>" + subcat + "</h1>\n\n")
                 
                 # Write all images to top of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in imageFormats:
-                        subindex.write('<div class="gallery">')
-                        subindex.write('<a target="_self" href="/subcategories/' + subcat + '/' + media + '">')
-                        subindex.write('<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '" height:"100%" width:"auto">\n</a>\n</div>\n\n')
+                        subindex.write('\t\t<div class="gallery">\n')
+                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t\t\t\t<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '"\n\t\t\t</a>\n\t\t</div>\n\n')
                 
                 # Write all videos to end of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in videoFormats:
-                        subindex.write('<div class="gallery">')
-                        subindex.write('<a target="_self" href="/subcategories/' + subcat + '/' + media + '">')
-                        subindex.write('<video width="500" controls><source src="/subcategories/' + subcat + '/' + media + '" type="video/mp4"></video>\n</a>\n</div>\n\n')
+                        subindex.write('\t\t<div class="gallery">\n')
+                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t\t\t\t<video class="galleryVideo" controls="controls" preload="metadata"><source src="/subcategories/' + subcat + '/' + media + '" type="video/mp4"></video>\n\t\t\t</a>\n\t\t</div>\n\n')
                 
 
                 # Close and save subcategory page
-                subindex.write("</body>")
+                subindex.write("\t</body>")
                 subindex.close()
 
         # Close and save main index page
-        index.write("</body>")        
+        index.write("\t\t</div>\n\t</body>")        
         index.close()
+
+        # Copy stylesheet
+        shutil.copy(styleDir + style + ".css", web + "style.css")
     
 def readConfig():
     cwd = os.path.abspath(os.path.dirname(__file__)) + "/config/"
@@ -136,30 +156,48 @@ def readConfig():
             for line in config.readlines():
                 line = line.split(" = ")
                 bigDict[i][line[0]] = line[1].strip()
+            
+            # Check if port is provided and ensure no collisions
             if "port" in bigDict[i].keys() and bigDict[i]["port"] in ports:
                 port = 9000
                 while str(port) in ports:
                     port += 1
                 bigDict[i]["port"] = str(port)
-                print(bigDict[i]["category"] + "'s port number had to be change due to overlap. Hosted port is: " + str(port))
+                print("NOTICE: " + bigDict[i]["category"] + "'s port number had to be change due to overlap. Hosted port is: " + str(port))
                 change = True
+
+            # Provide a port if no port is set
             if "port" not in bigDict[i].keys():
+                print(bigDict)
                 port = 9000
                 while str(port) in ports:
                     port += 1
                 bigDict[i]["port"] = str(port)
+            
+            # Check if authentication is set (True/False/Unique)
             if "auth" not in bigDict[i].keys():
                 bigDict[i]["auth"] = "False"
+
+            # Check if a theme/style is set
+            if "style" not in bigDict[i].keys():
+                bigDict[i]["style"] = "default"
+                change = True
+            if bigDict[i]["style"][-4:] == ".css":
+                bigDict[i]["style"] = bigDict[i]["style"][:-4]
+            
+            # Update port mapping
             ports.append(bigDict[i]["port"])
-            config.close()
-            if change == True:
-                change == False
-                with open(cwd + conf, "w") as config:
-                    config.write("category = " + bigDict[i]["category"] + "\n")
-                    config.write("title = " + bigDict[i]["title"] + "\n")
-                    config.write("banner = " + bigDict[i]["banner"] + "\n")
-                    config.write("auth = " + bigDict[i]["auth"] + "\n")
-                    config.write("port = " + bigDict[i]["port"] + "\n")
+
+        # If there was outdate info, update the config     
+        if change == True:
+            change = False
+            with open(cwd + conf, "w") as config:
+                config.write("category = " + bigDict[i]["category"] + "\n")
+                config.write("title = " + bigDict[i]["title"] + "\n")
+                config.write("banner = " + bigDict[i]["banner"] + "\n")
+                config.write("auth = " + bigDict[i]["auth"] + "\n")
+                config.write("port = " + bigDict[i]["port"] + "\n")
+                config.write("style = " + bigDict[i]["style"] + "\n")
         i+=1
     return bigDict
 
@@ -201,8 +239,20 @@ def end(ports):
             print(msg)
             myWebservers.write(msg + "\n")
     myWebservers.close()
+    
+    # Change permissions
+    os.system("for i in $(ls /home); do usermod -aG www-data $i; done")
+    os.system("chown -R www-data " + cwd)
+    os.system("chmod -R 770 " + cwd)
 
     os.system("systemctl restart nginx")
+
+def changelog():
+    sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
+    0.08 - External CSS support, improved formatting, added changelog, bug fixes
+    0.07 - Redirect due to incompatibility issues with HTML Only Mode
+    0.06 - Added HTML Only mode, Version Tracking, bug fixes
+    """)
 
 
 #################
@@ -213,10 +263,11 @@ def end(ports):
 if len(sys.argv) > 1:
     if sys.argv[1] in ["-h","--help"]:
         sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
-        -h --help       : Display this menu
-        -v --version    : Display the version number
-        -s --servers    : Print list of current servers
-        -H --html-only  : Generate html files without changing the nginx webserver backend
+        -h  --help       : Display this menu
+        -v  --version    : Display the version number
+        -s  --servers    : Print list of current servers
+        -H  --html-only  : Generate html files without changing the nginx webserver backend
+        -cl --changelog  : Print changes to The Magi
         """)
     elif sys.argv[1] in ["-v","--version"]:
         sys.exit(version)
@@ -226,6 +277,8 @@ if len(sys.argv) > 1:
         sys.exit(currentServers)
     elif sys.argv[1] in ["-H","--html-only"]:
         html_only = True
+    elif sys.argv[1] in ["-cl","--changelog"]:
+        changelog()
     else:
         sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
@@ -254,6 +307,7 @@ for x in bigDict.keys():
     category = bigDict[x]["category"]
     title = bigDict[x]["title"]
     banner = bigDict[x]["banner"]
+    style = bigDict[x]["style"]
     ports[category] = port
 
 # Create the nginx configuration file
@@ -261,11 +315,12 @@ for x in bigDict.keys():
         authentication(auth, port, category, x)
 
 # Create the html files
-    html(category, title, banner, version)
+    html(category, title, banner, version, style)
 
 # Print a mapping of all webservers and ports and save to docs/myWebservers.txt
 if not html_only:
     end(ports)
 
 print("The Magi has updated!")
+
 
