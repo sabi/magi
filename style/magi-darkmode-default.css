@@ -1,0 +1,39 @@
+/*
+Sabi. Simple Lightweight, but Not Beautiful
+https://github.com/sabi
+
+Theme: magi-darkmode-default.css
+Version: 1
+*/
+
+#background {
+        background-color: #353535;
+        color: white;
+}
+
+div.gallery {
+        margin: 5px;
+        border: 1px solid #ccc;
+        float:left;
+        width: 180px;
+        }
+
+div.gallery:hover {
+        border: 1px solid #777;
+        }
+
+div.gallery img {
+        width: 100%;
+        height:auto;
+        }
+
+.galleryVideo {
+        max-width: 180px;
+        width: auto;
+        }
+
+.caption {
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        }
