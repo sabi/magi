@@ -103,15 +103,15 @@ def html(category, title, banner, version, style):
     with open(web + "index.html", "w") as index:
         index.write(header)
         index.write("\n\t<body id=background>\n\n\t\t<div>\n")
-        index.write("\t\t\t<h1>" + banner + "</h1>\n")
+        index.write("\t"*3 + "<h1>" + banner + "</h1>\n")
         for subcat in os.listdir(subcategories):
-            index.write('\t\t\t\t<div class="gallery">\n')
-            index.write('\t\t\t\t\t<a target="_self" href="/web/' + subcat + '.html">\n')
+            index.write('\t'*4 + '<div class="gallery">\n')
+            index.write('\t'*5 + '<a target="_self" href="/web/' + subcat + '.html">\n')
             while True:
                 preview = os.listdir(subcategories + "/" + subcat)[random.randrange(0,len(os.listdir(subcategories + "/" + subcat)))]
                 if preview[-4:] in imageFormats:
                     break
-            index.write('\t\t\t\t\t\t<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '">\n\t\t\t\t\t</a>\n\t\t\t\t\t<span class="caption">' + subcat + '</span>\n\t\t\t\t</div>\n\n')
+            index.write('\t'*6 + '<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '">\n' + '\t'*5 + '</a>\n' + '\t'*5 + '<span class="caption">' + subcat + '</span>\n' + '\t'*4 + '</div>\n\n')
 
             # Create the subcategory pages
             with open(web + subcat + ".html", "w") as subindex:
@@ -121,16 +121,16 @@ def html(category, title, banner, version, style):
                 # Write all images to top of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in imageFormats:
-                        subindex.write('\t\t<div class="gallery">\n')
-                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
-                        subindex.write('\t\t\t\t<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '"\n\t\t\t</a>\n\t\t</div>\n\n')
+                        subindex.write('\t'*2 + '<div class="gallery">\n')
+                        subindex.write('\t'*3 + '<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t'*4 + '<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '"\n' + '\t'*3 + '</a>\n\t\t</div>\n\n')
                 
                 # Write all videos to end of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in videoFormats:
-                        subindex.write('\t\t<div class="gallery">\n')
-                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
-                        subindex.write('\t\t\t\t<video class="galleryVideo" controls="controls" preload="metadata"><source src="/subcategories/' + subcat + '/' + media + '" type="video/mp4"></video>\n\t\t\t</a>\n\t\t</div>\n\n')
+                        subindex.write('\t'*2 + '<div class="gallery">\n')
+                        subindex.write('\t'*3 + '<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t'*4 + '<video class="galleryVideo" controls="controls" preload="metadata"><source src="/subcategories/' + subcat + '/' + media + '" type="video/mp4"></video>\n' + '\t'*3 + '</a>\n\t\t</div>\n\n')
                 
 
                 # Close and save subcategory page
