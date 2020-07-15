@@ -13,7 +13,7 @@ Version: 2
         max-width: 750px;
 }
 
-div.gallery {
+.gallery {
         margin: 5px;
         border: 1px solid #ccc;
         float:left;
@@ -22,11 +22,11 @@ div.gallery {
         overflow: hidden;
         }
 
-div.gallery:hover {
+.gallery:hover {
         border: 1px solid #777;
         }
 
-div.gallery img {
+.gallery img {
         width: 100%;
         height:auto;
         }
