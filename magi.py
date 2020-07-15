@@ -84,7 +84,7 @@ def setup(version):
 def defaultCSS():
     with open(cwd + "/style/default.css","w") as css:
         css.write("/*\nSabi. Simple, Lightweight, but Not Beautiful\nhttps://github.com/sabi\n\nTheme: magi-darkmode-default.css\nVersion: 1\n*/\n\n")
-        css.write("#background {\n\tbackground-color:#353535;\n\tcolor: white;\n\tmax-width: 750px;\n\tmargin: auto;\n}\n\n")
+        css.write("#background {\n\tbackground-color:#353535;\n\tcolor: white;\n\tmax-width: 800px;\n\tmargin: auto;\n}\n\n")
         css.write(".gallery {\n\tmargin: 5px;\n\tborder: 1px solid #ccc;\n\tfloat: left;\n\twidth: 180px;\n\theight: 200px;\n\toverflow: hidden;\n}\n\n")
         css.write(".gallery:hover {\n\tborder: 1px solid #777;\n}\n\n")
         css.write(".gallery img {\n\twidth: 100%;\n\theight: auto;\n}\n\n")
