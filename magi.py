@@ -3,9 +3,9 @@
 # The Magi
 # Sabi. Simple, Lightweight, but Not Beautiful
 
-import os, shutil, sys, random 
+import os, shutil, sys, random
 
-version = "0.08"
+version = "0.09"
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -16,7 +16,7 @@ html_only = False
 
 def setup(version):
     update = False
-    
+
     # Check if running as root/sudo
     if not html_only:
         if not os.geteuid() == 0:
@@ -25,7 +25,7 @@ def setup(version):
     # Check if Python 3
     if not sys.version_info[0] == 3:
         sys.exit('This script is only compatible with Python 3.')
-    
+
     # Check if not Windows
     if os.name != "nt":
 
@@ -43,7 +43,7 @@ def setup(version):
                     os.system('apt-get install apache2 -y')
                 else:
                     os.system('apt-get update && apt-get install apache2 -y')
-    
+
     # Check if apache2 directory is present, since it doesn't always create...... >:(
             if not os.path.exists('/etc/apache2'):
                 os.makedirs('/etc/apache2')
@@ -51,11 +51,11 @@ def setup(version):
     # Check if nginx is installed
         if not shutil.which('nginx'):
             sys.exit('nginx is not installed on this machine.\nPlease install nginx if you want to host webservers on this machine,\nor if you just want the webfiles run with the --html-only option.')
-    
+
     # Check if apache2-utils is installed (for htpasswd authentication)
         if not shutil.which('apache2'):
             print("NOTICE: apache2 is not installed. You will not be able to secure your webpages with a password until you install.\n")
-    
+
     # Initialize any new webservers
     configs = os.listdir(cwd + "/config")
     for server in os.listdir(cwd + "/categories"):
@@ -71,21 +71,21 @@ def setup(version):
         if "web" not in os.listdir(server):
             os.makedirs(server + "/web")
 
-    # Ensure style directory exists 
+    # Ensure style directory exists
     if "style" not in os.listdir(cwd):
         os.makedirs(cwd + "/style")
         # TODO Make this Windows/Mac compatible
-    
+
     # Ensure default style exists
     if not os.path.isfile(cwd + "/style/default.css"):
         defaultCSS()
-    
+
 
 def defaultCSS():
     with open(cwd + "/style/default.css","w") as css:
         css.write("/*\nSabi. Simple, Lightweight, but Not Beautiful\nhttps://github.com/sabi\n\nTheme: magi-darkmode-default.css\nVersion: 1\n*/\n\n")
-        css.write("#background {\n\tbackground-color:#353535;\n\tcolor: white;\n}\n\n")
-        css.write(".gallery {\n\tmargin: 5px;\n\tborder: 1px solid #ccc;\n\tfloat: left;\n\twidth: 180px;\n}\n\n")
+        css.write("#background {\n\tbackground-color:#353535;\n\tcolor: white;\n\tmax-width: 750px;\n\tmargin: auto;\n}\n\n")
+        css.write(".gallery {\n\tmargin: 5px;\n\tborder: 1px solid #ccc;\n\tfloat: left;\n\twidth: 180px;\n\theight: 200px;\n\toverflow: hidden;\n}\n\n")
         css.write(".gallery:hover {\n\tborder: 1px solid #777;\n}\n\n")
         css.write(".gallery img {\n\twidth: 100%;\n\theight: auto;\n}\n\n")
         css.write(".galleryVideo {\n\tmax-width: 180px;\n\twidth: auto;\n}\n\n")
@@ -96,54 +96,55 @@ def html(category, title, banner, version, style):
     web = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/web/"
     styleDir = os.path.abspath(os.path.dirname(__file__)) + "/style/"
     subcategories = os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + "/subcategories"
-    
+
     header = "<!DOCTYPE HTML>\n<html>\n\n\t<head>\n\t\t<title>" + title + "</title>\n\t\t<link rel='stylesheet' href='/web/style.css'>\n\t\t<metadata charset='utf-8'>\n\t\t<meta name='generator' content='The Magi " + version + "'/>\n\t</head>\n"
 
     # Create the main index page
     with open(web + "index.html", "w") as index:
         index.write(header)
         index.write("\n\t<body id=background>\n\n\t\t<div>\n")
-        index.write("\t"*3 + "<h1>" + banner + "</h1>\n")
+        index.write("\t\t\t<h1>" + banner + "</h1>\n")
         for subcat in os.listdir(subcategories):
-            index.write('\t'*4 + '<div class="gallery">\n')
-            index.write('\t'*5 + '<a target="_self" href="/web/' + subcat + '.html">\n')
+            index.write('\t\t\t\t<div class="gallery">\n')
+            index.write('\t\t\t\t\t<span class="caption">' + subcat + '</span>\n')
+            index.write('\t\t\t\t\t<a target="_self" href="/web/' + subcat + '.html">\n')
             while True:
                 preview = os.listdir(subcategories + "/" + subcat)[random.randrange(0,len(os.listdir(subcategories + "/" + subcat)))]
                 if preview[-4:] in imageFormats:
                     break
-            index.write('\t'*6 + '<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '">\n' + '\t'*5 + '</a>\n' + '\t'*5 + '<span class="caption">' + subcat + '</span>\n' + '\t'*4 + '</div>\n\n')
+            index.write('\t\t\t\t\t\t<img src="/subcategories/' + subcat + '/' + preview + '" alt="' + subcat + '">\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\n')
 
             # Create the subcategory pages
             with open(web + subcat + ".html", "w") as subindex:
                 subindex.write(header)
                 subindex.write("\n\t<body id='background'>\n\n\t\t<h1>" + subcat + "</h1>\n\n")
-                
+
                 # Write all images to top of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in imageFormats:
-                        subindex.write('\t'*2 + '<div class="gallery">\n')
-                        subindex.write('\t'*3 + '<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
-                        subindex.write('\t'*4 + '<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '"\n' + '\t'*3 + '</a>\n\t\t</div>\n\n')
-                
+                        subindex.write('\t\t<div class="gallery">\n')
+                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t\t\t\t<img src="/subcategories/' + subcat + '/' + media + '" alt="' + media + '"\n\t\t\t</a>\n\t\t</div>\n\n')
+
                 # Write all videos to end of webpage
                 for media in os.listdir(subcategories + "/" + subcat):
                     if media[-4:].lower() in videoFormats:
-                        subindex.write('\t'*2 + '<div class="gallery">\n')
-                        subindex.write('\t'*3 + '<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
-                        subindex.write('\t'*4 + '<video class="galleryVideo" controls="controls" preload="metadata"><source src="/subcategories/' + subcat + '/' + media + '" type="video/mp4"></video>\n' + '\t'*3 + '</a>\n\t\t</div>\n\n')
-                
+                        subindex.write('\t\t<div class="gallery">\n')
+                        subindex.write('\t\t\t<a target="_self" href="/subcategories/' + subcat + '/' + media + '">\n')
+                        subindex.write('\t\t\t\t<video class="galleryVideo" controls="controls" preload="metadata"><source src="/subcategories/' + subcat + '/' + media + '"></video>\n\t\t\t</a>\n\t\t</div>\n\n')
+
 
                 # Close and save subcategory page
                 subindex.write("\t</body>")
                 subindex.close()
 
         # Close and save main index page
-        index.write("\t\t</div>\n\t</body>")        
+        index.write("\t\t</div>\n\t</body>")
         index.close()
 
         # Copy stylesheet
         shutil.copy(styleDir + style + ".css", web + "style.css")
-    
+
 def readConfig():
     cwd = os.path.abspath(os.path.dirname(__file__)) + "/config/"
     i = 1
@@ -156,7 +157,7 @@ def readConfig():
             for line in config.readlines():
                 line = line.split(" = ")
                 bigDict[i][line[0]] = line[1].strip()
-            
+
             # Check if port is provided and ensure no collisions
             if "port" in bigDict[i].keys() and bigDict[i]["port"] in ports:
                 port = 9000
@@ -173,7 +174,7 @@ def readConfig():
                 while str(port) in ports:
                     port += 1
                 bigDict[i]["port"] = str(port)
-            
+
             # Check if authentication is set (True/False/Unique)
             if "auth" not in bigDict[i].keys():
                 bigDict[i]["auth"] = "False"
@@ -184,11 +185,11 @@ def readConfig():
                 change = True
             if bigDict[i]["style"][-4:] == ".css":
                 bigDict[i]["style"] = bigDict[i]["style"][:-4]
-            
+
             # Update port mapping
             ports.append(bigDict[i]["port"])
 
-        # If there was outdate info, update the config     
+        # If there was outdate info, update the config
         if change == True:
             change = False
             with open(cwd + conf, "w") as config:
@@ -210,7 +211,7 @@ def authentication(auth, port, category, x):
         user = input("Enter Username for authentication for private Magi servers.\n")
         os.system("htpasswd -c /etc/apache2/.htpasswd_magi " + user)
         authSet = True
-    
+
     # if this is the first server in the update or not
     if x == 1:
         f = open("/etc/nginx/sites-enabled/magi","w")
@@ -219,10 +220,10 @@ def authentication(auth, port, category, x):
 
     if auth.lower() == "unique":
         print("\n\n" + "#"*36 + "\n#### AUTHENTICATION CREDENTIALS ####\n" + "#"*36 + "\n")
-        user = input("Enter Username for authentication for " + category + "\n") 
+        user = input("Enter Username for authentication for " + category + "\n")
         f.write("server {\nlisten " + port + ";\nroot " + os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + ";\nindex web/index.html;\nserver_name _;\nauth_basic 'Magi Login';\nauth_basic_user_file /etc/apache2/.htpasswd_" + category + ";\nlocation / {\n}\n}")
         os.system("htpasswd -c /etc/apache2/.htpasswd_" + category + " " + user)
-    
+
     elif auth.lower() in trueValues:
         f.write("server {\nlisten " + port + ";\nroot " + os.path.abspath(os.path.dirname(__file__)) + "/categories/" + category + ";\nindex web/index.html;\nserver_name _;\nauth_basic 'Magi Login';\nauth_basic_user_file /etc/apache2/.htpasswd_magi;\nlocation / {\n}\n}")
 
@@ -239,16 +240,17 @@ def end(ports):
             print(msg)
             myWebservers.write(msg + "\n")
     myWebservers.close()
-    
+
     # Change permissions
     os.system("for i in $(ls /home); do usermod -aG www-data $i; done")
-    os.system("chown -R www-data " + cwd)
-    os.system("chmod -R 770 " + cwd)
+    os.system("chown -R www-data:www-data " + cwd)
+    os.system("chmod -R 777 " + cwd)
 
     os.system("systemctl restart nginx")
 
 def changelog():
     sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
+    0.09 - Permissions change, style changes
     0.08 - External CSS support, improved formatting, added changelog, bug fixes
     0.07 - Redirect due to incompatibility issues with HTML Only Mode
     0.06 - Added HTML Only mode, Version Tracking, bug fixes
@@ -322,5 +324,3 @@ if not html_only:
     end(ports)
 
 print("The Magi has updated!")
-
-
