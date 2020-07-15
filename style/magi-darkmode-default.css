@@ -2,13 +2,15 @@
 Sabi. Simple Lightweight, but Not Beautiful
 https://github.com/sabi
 
-Theme: magi-darkmode-default.css
-Version: 1
+Theme: magi-darktmode-default.css
+Version: 2
 */
 
 #background {
         background-color: #353535;
         color: white;
+        margin: auto;
+        max-width: 750px;
 }
 
 div.gallery {
@@ -16,6 +18,8 @@ div.gallery {
         border: 1px solid #ccc;
         float:left;
         width: 180px;
+        height: 200px;
+        overflow: hidden;
         }
 
 div.gallery:hover {
