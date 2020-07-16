@@ -169,7 +169,6 @@ def readConfig():
 
             # Provide a port if no port is set
             if "port" not in bigDict[i].keys():
-                print(bigDict)
                 port = 9000
                 while str(port) in ports:
                     port += 1
