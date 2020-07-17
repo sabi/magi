@@ -16,28 +16,40 @@ Version: 2
 .gallery {
         margin: 5px;
         border: 1px solid #ccc;
-        float:left;
+        float: left;
         width: 180px;
         height: 200px;
         overflow: hidden;
-        }
+        display: table;
+}
 
 .gallery:hover {
         border: 1px solid #777;
-        }
+}
 
 .gallery img {
-        width: 100%;
-        height:auto;
-        }
+        max-width: 100%;
+        max-height: 200px;
+        display: block;
+        top: 50%;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+}
 
 .galleryVideo {
         max-width: 180px;
         width: auto;
-        }
+}
 
 .caption {
         display: block;
         text-align: center;
         font-weight: bold;
-        }
+}
+
+.wrapper {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+}
