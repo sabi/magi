@@ -5,7 +5,9 @@
 
 import os, shutil, sys, random
 
-version = "0.09"
+version = "0.10"
+
+startPort = 9000
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -145,7 +147,7 @@ def html(category, title, banner, version, style):
         # Copy stylesheet
         shutil.copy(styleDir + style + ".css", web + "style.css")
 
-def readConfig():
+def readConfig(startPort):
     cwd = os.path.abspath(os.path.dirname(__file__)) + "/config/"
     i = 1
     bigDict = {}
@@ -160,7 +162,7 @@ def readConfig():
 
             # Check if port is provided and ensure no collisions
             if "port" in bigDict[i].keys() and bigDict[i]["port"] in ports:
-                port = 9000
+                port = startPort
                 while str(port) in ports:
                     port += 1
                 bigDict[i]["port"] = str(port)
@@ -169,7 +171,7 @@ def readConfig():
 
             # Provide a port if no port is set
             if "port" not in bigDict[i].keys():
-                port = 9000
+                port = startPort
                 while str(port) in ports:
                     port += 1
                 bigDict[i]["port"] = str(port)
@@ -249,6 +251,7 @@ def end(ports):
 
 def changelog():
     sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
+    0.10 - Created mapping for starting port for easy configurations
     0.09 - Permissions change, style changes
     0.08 - External CSS support, improved formatting, added changelog, bug fixes
     0.07 - Redirect due to incompatibility issues with HTML Only Mode
@@ -299,7 +302,7 @@ if html_only == True:
 setup(version)
 
 # Read configuration files and add them to bigDict
-bigDict = readConfig()
+bigDict = readConfig(startPort)
 
 # Prime variables for each webserver
 for x in bigDict.keys():
