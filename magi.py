@@ -272,6 +272,7 @@ if len(sys.argv) > 1:
         -s  --servers    : Print list of current servers
         -H  --html-only  : Generate html files without changing the nginx webserver backend
         -cl --changelog  : Print changes to The Magi
+        -p  --port       : Assign a starting port
         """)
     elif sys.argv[1] in ["-v","--version"]:
         sys.exit(version)
@@ -283,6 +284,11 @@ if len(sys.argv) > 1:
         html_only = True
     elif sys.argv[1] in ["-cl","--changelog"]:
         changelog()
+    elif sys.argv[1] in ["-p","--port"]:
+        if sys.argv[2].isdigit():
+            startPort = int(sys.argv[2])
+        else:
+            sys.exit("Port assignments require integer values to be entered")
     else:
         sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
