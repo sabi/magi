@@ -5,9 +5,10 @@
 
 import os, shutil, sys, random
 
-version = "0.10"
+version = "0.11"
 
 startPort = 9000
+nginxFile = "magi"
 
 cwd = os.path.abspath(os.path.dirname(__file__))
 
@@ -203,7 +204,7 @@ def readConfig(startPort):
         i+=1
     return bigDict
 
-def authentication(auth, port, category, x):
+def authentication(auth, port, category, x, nginxFile):
     trueValues = [True, "true", "t"]
     falseValues = [False, "false", "f"]
     global authSet
@@ -215,9 +216,9 @@ def authentication(auth, port, category, x):
 
     # if this is the first server in the update or not
     if x == 1:
-        f = open("/etc/nginx/sites-enabled/magi","w")
+        f = open("/etc/nginx/sites-enabled/" + nginxFile,"w")
     else:
-        f = open("/etc/nginx/sites-enabled/magi","a")
+        f = open("/etc/nginx/sites-enabled/" + nginxFile,"a")
 
     if auth.lower() == "unique":
         print("\n\n" + "#"*36 + "\n#### AUTHENTICATION CREDENTIALS ####\n" + "#"*36 + "\n")
@@ -251,6 +252,7 @@ def end(ports):
 
 def changelog():
     sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
+    0.11 - Added dynamic NGINX file name scheme, changed logic for arguments
     0.10 - Created mapping for starting port for easy configurations
     0.09 - Permissions change, style changes
     0.08 - External CSS support, improved formatting, added changelog, bug fixes
@@ -273,6 +275,8 @@ if len(sys.argv) > 1:
         -H  --html-only  : Generate html files without changing the nginx webserver backend
         -cl --changelog  : Print changes to The Magi
         -p  --port       : Assign a starting port
+        -n  --nginx      : Assign file name for NGINX backend to avoid collision
+                         : with other programs that use The Magi
         """)
     elif sys.argv[1] in ["-v","--version"]:
         sys.exit(version)
@@ -284,13 +288,17 @@ if len(sys.argv) > 1:
         html_only = True
     elif sys.argv[1] in ["-cl","--changelog"]:
         changelog()
-    elif sys.argv[1] in ["-p","--port"]:
-        if sys.argv[2].isdigit():
-            startPort = int(sys.argv[2])
-        else:
-            sys.exit("Port assignments require integer values to be entered")
     else:
-        sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
+        for i in ["-p","--port"]:
+            if i in sys.argv:
+                startPort = int(sys.argv[sys.argv.index(i)+1])
+            else:
+                sys.exit("Port assignments require integer values to be entered")
+        for i in ["-n","--nginx"]:
+            if i in sys.argv:
+                nginxFile = sys.argv[sys.argv.index(i)+1]
+        else:
+            sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
 ports = {}
 authSet = False
@@ -322,7 +330,7 @@ for x in bigDict.keys():
 
 # Create the nginx configuration file
     if not html_only:
-        authentication(auth, port, category, x)
+        authentication(auth, port, category, x, nginxFile)
 
 # Create the html files
     html(category, title, banner, version, style)
