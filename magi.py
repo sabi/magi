@@ -5,7 +5,7 @@
 
 import os, shutil, sys, random
 
-version = "0.111"
+version = "0.112"
 
 startPort = 9000
 nginxFile = "magi"
@@ -266,6 +266,7 @@ def changelog():
 #################
 
 # Check for options flags
+# TODO: Add handling for wrong option
 if len(sys.argv) > 1:
     if sys.argv[1] in ["-h","--help"]:
         sys.exit("""The Magi by Sabi. Simple, Lightweight, but Not Beautiful.
@@ -298,8 +299,6 @@ if len(sys.argv) > 1:
         for i in ["-n","--nginx"]:
             if i in sys.argv:
                 nginxFile = sys.argv[sys.argv.index(i)+1]
-        else:
-            sys.exit(sys.argv[1] + " is not a valid option. See -h or --help for list of options.")
 
 ports = {}
 authSet = False
