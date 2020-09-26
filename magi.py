@@ -5,7 +5,7 @@
 
 import os, shutil, sys, random
 
-version = "0.11"
+version = "0.111"
 
 startPort = 9000
 nginxFile = "magi"
@@ -292,8 +292,9 @@ if len(sys.argv) > 1:
         for i in ["-p","--port"]:
             if i in sys.argv:
                 startPort = int(sys.argv[sys.argv.index(i)+1])
-            else:
-                sys.exit("Port assignments require integer values to be entered")
+            #else:
+                #sys.exit("Port assignments require integer values to be entered")
+                # TODO: This will cancel out the script for the other option. Add in handling for if the port number given isnt an integer
         for i in ["-n","--nginx"]:
             if i in sys.argv:
                 nginxFile = sys.argv[sys.argv.index(i)+1]
